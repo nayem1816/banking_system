@@ -5,53 +5,34 @@ const config = require("../../../config/config");
 
 const userSchema = new mongoose.Schema(
   {
-    fullname: {
+    fullName: {
       type: String,
-      required: [true, "Please enter Your Name"],
+      required: [true, "Name is required"],
+      trim: true,
     },
     email: {
       type: String,
-      required: true,
+      required: [true, "Email is required"],
+      trim: true,
       unique: true,
-      validate: [validator.isEmail, "Invalid Email"],
+      lowercase: true,
+      validate: [validator.isEmail, "Invalid email"],
     },
     password: {
       type: String,
-      required: true,
+      required: [true, "Password is required"],
+      trim: true,
+      minlength: [6, "Password must be at least 6 characters long"],
     },
     role: {
       type: String,
-      enum: ["Super Admin", "Admin", "User"],
-      required: true,
+      enum: ["super admin", "admin", "user"],
+      default: "user",
     },
-    photo: {
-      public_id: {
-        type: String,
-        // required: true,
-      },
-      url: {
-        type: String,
-        // required: true,
-      },
-    },
-    phone: {
+    status: {
       type: String,
-      length: [11, "Phone number must be 11 digits"],
-      trim: true,
-    },
-    gender: {
-      type: String,
-      enum: ["Male", "Female", "Others"],
-    },
-    userStatus: {
-      type: String,
-      enum: ["Active", "Block", "Restricted"],
-      default: "Active",
-    },
-    department: {
-      type: String,
-      enum: ["Business Development", "Marketing", "Tech"],
-      required: true,
+      enum: ["active", "inactive"],
+      default: "active",
     },
   },
   { timestamps: true, versionKey: false }

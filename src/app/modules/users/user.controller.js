@@ -5,27 +5,14 @@ const sendResponse = require("../../../shared/sendResponse");
 const { userFilterableFields } = require("./user.constant");
 const UserService = require("./user.services");
 
-const createUser = catchAsync(async (req, res, next) => {
-  const userImage = req.file;
-
-  let imageData = {};
-
-  if (userImage?.path) {
-    imageData = {
-      url: userImage?.path,
-      public_id: userImage?.filename,
-    };
-  }
-
-  const result = await UserService.createUserService(req.body, imageData);
-
-  const { password, ...userData } = result._doc;
+const registerUser = catchAsync(async (req, res, next) => {
+  const result = await UserService.registerUserService(req.body);
 
   sendResponse(res, {
     statusCode: 201,
     success: true,
-    message: "User created successfully",
-    data: userData,
+    message: "Your Registration is Successful.",
+    data: result[0],
   });
 });
 
@@ -46,6 +33,6 @@ const getAllUsers = catchAsync(async (req, res, next) => {
 });
 
 module.exports = {
-  createUser,
+  registerUser,
   getAllUsers,
 };

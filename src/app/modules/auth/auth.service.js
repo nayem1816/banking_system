@@ -2,13 +2,14 @@ const ApiError = require("../../../errors/apiError");
 const User = require("../users/user.model");
 const bcrypt = require("bcrypt");
 const jwtHelpers = require("../../../helpers/jwtHelpers");
+const config = require("../../../config/config");
 
 const loginService = async (payload) => {
   const { email, password } = payload;
 
   const isExistUser = await User.findOne({
     email,
-    userStatus: "Active",
+    status: "active",
   });
 
   if (!isExistUser) {
@@ -26,7 +27,7 @@ const loginService = async (payload) => {
   }
 
   const accessToken = jwtHelpers.createToken(
-    { _id, email, role },
+    { _id, email, role,  },
     config.jwt.secret,
     config.jwt.expires_in
   );
