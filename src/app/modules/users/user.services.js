@@ -25,7 +25,6 @@ const registerUserService = async (payload) => {
   const isExistReferCode = await ReferralCode.findOne({
     code: payload.referCode,
   });
-
   if (!isExistReferCode) {
     throw new ApiError(400, "This referral code is invalid.");
   }
@@ -37,6 +36,7 @@ const registerUserService = async (payload) => {
     throw new ApiError(400, "This referral code is invalid.");
   }
 
+  // ------------------ generate referral code ------------------
   const generateReferralCode = async () => {
     const timestamp = Date.now();
     const randomNumber = Math.floor(100000 + Math.random() * 900000);
@@ -51,9 +51,9 @@ const registerUserService = async (payload) => {
 
     return referralCode;
   };
-
   const myReferralCode = await generateReferralCode();
 
+  // ------------------ save user data ------------------
   const saveUserData = {
     fullName: payload.firstName + " " + payload.lastName,
     email: payload.email,
@@ -65,10 +65,10 @@ const registerUserService = async (payload) => {
   try {
     session.startTransaction();
 
-    // create user
+    // ------------------ create user ------------------
     const result = await User.create([saveUserData], { session });
 
-    // create referral code
+    // create referral code for my self
     const saveReferralData = {
       user: result[0]._id,
       code: myReferralCode,
@@ -76,6 +76,13 @@ const registerUserService = async (payload) => {
     await ReferralCode.create([saveReferralData], {
       session,
     });
+
+    // update refer code is used or not
+    await ReferralCode.updateOne(
+      { code: payload.referCode },
+      { isUsed: true },
+      { session }
+    );
 
     // create group
     const saveGroupData = {
@@ -88,9 +95,9 @@ const registerUserService = async (payload) => {
       group: groupResult[0]._id,
       user: result[0]._id,
     };
-
     await GroupMember.create([saveGroupMemberData], { session });
 
+    // new user add in refer user group
     const saveReferUserGroupMemberData = {
       group: findGroupId._id,
       user: result[0]._id,
