@@ -9,5 +9,10 @@ router.get(
   auth(),
   GroupMemberController.getMyGroupMembers
 );
+router.get(
+  "/assign-group-members",
+  auth(),
+  GroupMemberController.getAssignGroupMembers
+);
 
 module.exports = router;

@@ -15,6 +15,21 @@ const getMyGroupMembers = catchAsync(async (req, res, next) => {
   });
 });
 
+const getAssignGroupMembers = catchAsync(async (req, res, next) => {
+    const userId = req.user._id;
+    
+    const result = await GroupMemberService.getAssignGroupMembersService(userId);
+    
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Get assign group members",
+        data: result,
+    });
+
+});
+
 module.exports = {
   getMyGroupMembers,
+  getAssignGroupMembers
 };
