@@ -17,8 +17,8 @@ const updateMyInfo = catchAsync(async (req, res, next) => {
   const photo = req.file;
 
   const userPhoto = {};
-  if (photo?.url) {
-    userPhoto.photo = photo.url;
+  if (photo?.path) {
+    userPhoto.url = photo.path;
     userPhoto.fileName = photo.originalname;
     userPhoto.public_id = photo.filename;
     userPhoto.type = photo.mimetype;

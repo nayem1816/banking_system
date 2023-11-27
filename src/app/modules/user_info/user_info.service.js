@@ -61,9 +61,27 @@ const updateMyInfoService = async (MyUserId, payload, userPhoto) => {
     throw new ApiError(404, "User info not found");
   }
 
+  const isExistPhone = await UserInfo.findOne({
+    phone: payload.phone,
+    userId: { $ne: MyUserId },
+  });
+
+  if (isExistPhone) {
+    throw new ApiError(400, "Phone already exist");
+  }
+
+  const isExistNationalID = await UserInfo.findOne({
+    nationalID: payload.nationalID,
+    userId: { $ne: MyUserId },
+  });
+
+  if (isExistNationalID) {
+    throw new ApiError(400, "National ID already exist");
+  }
+
   const updateInfo = {};
 
-  if (userPhoto) {
+  if (userPhoto?.url) {
     updateInfo.userPhoto = userPhoto;
   }
   if (payload.phone) {

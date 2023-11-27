@@ -26,6 +26,7 @@ const registerUserService = async (payload) => {
   const isExistReferCode = await ReferralCode.findOne({
     code: payload.referCode,
   });
+
   if (!isExistReferCode) {
     throw new ApiError(400, "This referral code is invalid.");
   }
@@ -117,8 +118,8 @@ const registerUserService = async (payload) => {
   }
 };
 
-const createSuperAdminService = async (payload) => {
-  const requiredFields = ["firstName", "lastName", "email", "password"];
+const registerAdminService = async (payload) => {
+  const requiredFields = ["firstName", "lastName", "email", "password", "role"];
 
   for (const field of requiredFields) {
     if (!payload[field]) {
@@ -126,16 +127,71 @@ const createSuperAdminService = async (payload) => {
     }
   }
 
+  // ------------------ generate referral code ------------------
+  const generateReferralCode = async () => {
+    const timestamp = Date.now();
+    const randomNumber = Math.floor(100000 + Math.random() * 900000);
+
+    const referralCode = `${timestamp}${randomNumber}`;
+
+    const isExistCode = await ReferralCode.findOne({ code: referralCode });
+
+    if (isExistCode) {
+      return generateReferralCode();
+    }
+
+    return referralCode;
+  };
+  const myReferralCode = await generateReferralCode();
+
+  // ------------------ save user data ------------------
   const saveUserData = {
     fullName: payload.firstName + " " + payload.lastName,
     email: payload.email,
     password: payload.password,
-    role: "super_admin",
+    role: payload.role,
   };
 
-  const result = await User.create([saveUserData]);
+  const session = await mongoose.startSession();
 
-  return result;
+  try {
+    session.startTransaction();
+
+    // ------------------ create user ------------------
+    const result = await User.create([saveUserData], { session });
+
+    // create referral code for my self
+    const saveReferralData = {
+      user: result[0]._id,
+      code: myReferralCode,
+    };
+    await ReferralCode.create([saveReferralData], {
+      session,
+    });
+
+    // create group
+    const saveGroupData = {
+      groupAdmin: result[0]._id,
+    };
+    const groupResult = await Group.create([saveGroupData], { session });
+
+    // create group member
+    const saveGroupMemberData = {
+      group: groupResult[0]._id,
+      user: result[0]._id,
+    };
+    await GroupMember.create([saveGroupMemberData], { session });
+    await UserInfo.create([{ userId: result[0]._id }], { session });
+
+    await session.commitTransaction();
+    await session.endSession();
+
+    return result;
+  } catch (error) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw new ApiError(500, error.message);
+  }
 };
 
 const getAllUsersService = async (filters, paginationOptions) => {
@@ -205,5 +261,6 @@ const getAllUsersService = async (filters, paginationOptions) => {
 
 module.exports = {
   registerUserService,
+  registerAdminService,
   getAllUsersService,
 };

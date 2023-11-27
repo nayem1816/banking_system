@@ -34,7 +34,6 @@ const userInfoSchema = new mongoose.Schema(
     phone: {
       type: String,
       trim: true,
-      unique: true,
       validate: {
         validator: function (v) {
           return /\+?(88)?0?1[3456789][0-9]{8}\b/.test(v);
@@ -44,7 +43,6 @@ const userInfoSchema = new mongoose.Schema(
     nationalID: {
       type: String,
       trim: true,
-      unique: true,
       validate: {
         validator: function (v) {
           return /\d{10,17}/.test(v);

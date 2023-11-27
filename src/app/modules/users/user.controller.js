@@ -32,7 +32,19 @@ const getAllUsers = catchAsync(async (req, res, next) => {
   });
 });
 
+const registerAdmin = catchAsync(async (req, res, next) => {
+  const result = await UserService.registerAdminService(req.body);
+
+  sendResponse(res, {
+    statusCode: 201,
+    success: true,
+    message: "Admin Registration is Successful.",
+    data: result[0],
+  });
+});
+
 module.exports = {
   registerUser,
   getAllUsers,
+  registerAdmin,
 };
