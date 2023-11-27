@@ -6,6 +6,7 @@ const ReferralCode = require("../referral_code/referral_code.model");
 const Group = require("../group/group.model");
 const GroupMember = require("../group_member/group_member.model");
 const { default: mongoose } = require("mongoose");
+const UserInfo = require("../user_info/user_info.model");
 
 const registerUserService = async (payload) => {
   const requiredFields = [
@@ -103,6 +104,7 @@ const registerUserService = async (payload) => {
       user: result[0]._id,
     };
     await GroupMember.create([saveReferUserGroupMemberData], { session });
+    await UserInfo.create([{ userId: result[0]._id }], { session });
 
     await session.commitTransaction();
     await session.endSession();
@@ -113,6 +115,27 @@ const registerUserService = async (payload) => {
     await session.endSession();
     throw new ApiError(500, error.message);
   }
+};
+
+const createSuperAdminService = async (payload) => {
+  const requiredFields = ["firstName", "lastName", "email", "password"];
+
+  for (const field of requiredFields) {
+    if (!payload[field]) {
+      throw new ApiError(400, `Please provide ${field}`);
+    }
+  }
+
+  const saveUserData = {
+    fullName: payload.firstName + " " + payload.lastName,
+    email: payload.email,
+    password: payload.password,
+    role: "super_admin",
+  };
+
+  const result = await User.create([saveUserData]);
+
+  return result;
 };
 
 const getAllUsersService = async (filters, paginationOptions) => {

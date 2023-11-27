@@ -10,9 +10,9 @@ cloudinary.v2.config({
 });
 
 const generateFolder = (req, file) => {
-  // let folder = `banking_system/${file.fieldname}`;
+  let folder = `banking_system/${file.fieldname}`;
 
-  return `banking_system/${file.fieldname}`;
+  return `banking_system/${folder}`;
 };
 
 // Cloudinary storage
