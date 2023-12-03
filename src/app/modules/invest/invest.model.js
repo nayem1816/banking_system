@@ -1,31 +1,45 @@
 const mongoose = require("mongoose");
 
-const referralCodeSchema = new mongoose.Schema(
+const InvestSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: [true, "User is required"],
     },
-    code: {
-      type: Number,
-      required: [true, "Code is required"],
-      trim: true,
-      unique: true,
+    group: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Group",
+      required: [true, "Group is required"],
     },
-    isUsed: {
-      type: Boolean,
-      default: false,
+    investDuration: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "InvestDuration",
+      required: [true, "Invest Duration is required"],
+    },
+    amount: {
+      type: Number,
+      required: [true, "Amount is required"],
+    },
+    transactionId: {
+      type: String,
+      required: [true, "Transaction Id is required"],
+    },
+    provider: {
+      type: String,
+      required: [true, "Provider is required"],
+      enum: ["bkash", "nagad", "rocket"],
     },
     status: {
       type: String,
-      enum: ["active", "inactive"],
-      default: "active",
+      required: [true, "Status is required"],
+      enum: ["pending", "approved", "rejected"],
+      default: "pending",
     },
   },
   { timestamps: true, versionKey: false }
 );
 
-const ReferralCode = mongoose.model("ReferralCode", referralCodeSchema);
+const Invest = mongoose.model("Invest", InvestSchema);
 
-module.exports = ReferralCode;
+module.exports = Invest;

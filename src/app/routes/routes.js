@@ -2,8 +2,11 @@ const express = require("express");
 const AuthRoutes = require("../modules/auth/auth.routes");
 const UserRoutes = require("../modules/users/user.routes");
 const ReferralCodeRoutes = require("../modules/referral_code/referral_code.routes");
+const GroupRoutes = require("../modules/group/group.routes");
 const GroupMemberRoutes = require("../modules/group_member/group_member.routes");
 const UserInfoRoutes = require("../modules/user_info/user_info.routes");
+const InvestDurationRoutes = require("../modules/invest_duration/invest_duration.routes");
+const InvestRoutes = require("../modules/invest/invest.routes");
 
 const router = express.Router();
 
@@ -25,8 +28,20 @@ const routes = [
     route: ReferralCodeRoutes,
   },
   {
+    path: "/group",
+    route: GroupRoutes,
+  },
+  {
     path: "/group-member",
     route: GroupMemberRoutes,
+  },
+  {
+    path: "/invest-duration",
+    route: InvestDurationRoutes,
+  },
+  {
+    path: "/invest",
+    route: InvestRoutes,
   },
 ];
 
