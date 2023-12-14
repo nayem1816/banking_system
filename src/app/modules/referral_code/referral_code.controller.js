@@ -4,8 +4,12 @@ const ReferralCodeService = require("./referral_code.service");
 
 const getMyReferralCode = catchAsync(async (req, res, next) => {
   const userId = req.user._id;
+  const userRole = req.user.role;
 
-  const result = await ReferralCodeService.getMyReferralCodeService(userId);
+  const result = await ReferralCodeService.getMyReferralCodeService(
+    userId,
+    userRole
+  );
 
   sendResponse(res, {
     statusCode: 200,

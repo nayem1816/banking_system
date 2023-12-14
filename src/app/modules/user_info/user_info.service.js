@@ -30,6 +30,7 @@ const getMyInfoService = async (MyUserId) => {
         userId: "$_id",
         fullName: 1,
         email: 1,
+        role: 1,
         phone: "$userInfo.phone",
         nationalID: "$userInfo.nationalID",
         address: "$userInfo.address",

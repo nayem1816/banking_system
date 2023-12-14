@@ -24,6 +24,7 @@ const InvestSchema = new mongoose.Schema(
     transactionId: {
       type: String,
       required: [true, "Transaction Id is required"],
+      unique: true,
     },
     provider: {
       type: String,
@@ -35,6 +36,16 @@ const InvestSchema = new mongoose.Schema(
       required: [true, "Status is required"],
       enum: ["pending", "approved", "rejected"],
       default: "pending",
+    },
+    approvedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+    startDate: {
+      type: Date,
+    },
+    endDate: {
+      type: Date,
     },
   },
   { timestamps: true, versionKey: false }

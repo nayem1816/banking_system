@@ -7,6 +7,8 @@ const GroupMemberRoutes = require("../modules/group_member/group_member.routes")
 const UserInfoRoutes = require("../modules/user_info/user_info.routes");
 const InvestDurationRoutes = require("../modules/invest_duration/invest_duration.routes");
 const InvestRoutes = require("../modules/invest/invest.routes");
+const TransactionsRoutes = require("../modules/transactions/transactions.routes");
+const MyBalanceRoutes = require("../modules/my_balance/my_balance.routes");
 
 const router = express.Router();
 
@@ -42,6 +44,14 @@ const routes = [
   {
     path: "/invest",
     route: InvestRoutes,
+  },
+  {
+    path: "/transaction",
+    route: TransactionsRoutes,
+  },
+  {
+    path: "/my-balance",
+    route: MyBalanceRoutes,
   },
 ];
 

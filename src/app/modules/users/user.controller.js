@@ -16,6 +16,31 @@ const registerUser = catchAsync(async (req, res, next) => {
   });
 });
 
+const registerUserByAdmin = catchAsync(async (req, res, next) => {
+  const userId = req.user.id;
+  const result = await UserService.registerUserByAdminService(req.body, userId);
+
+  sendResponse(res, {
+    statusCode: 201,
+    success: true,
+    message: "Your Registration is Successful.",
+    data: result[0],
+  });
+});
+
+const registerAdmin = catchAsync(async (req, res, next) => {
+  const userId = req.user.id;
+
+  const result = await UserService.registerAdminService(req.body, userId);
+
+  sendResponse(res, {
+    statusCode: 201,
+    success: true,
+    message: "Admin Registration is Successful.",
+    data: result[0],
+  });
+});
+
 const getAllUsers = catchAsync(async (req, res, next) => {
   const filters = pick(req.query, userFilterableFields);
   const paginationOptions = pick(req.query, paginationFields);
@@ -32,19 +57,33 @@ const getAllUsers = catchAsync(async (req, res, next) => {
   });
 });
 
-const registerAdmin = catchAsync(async (req, res, next) => {
-  const result = await UserService.registerAdminService(req.body);
+const registerSuperAdmin = catchAsync(async (req, res, next) => {
+  const result = await UserService.registerSuperAdminService(req.body);
 
   sendResponse(res, {
     statusCode: 201,
     success: true,
-    message: "Admin Registration is Successful.",
+    message: "Super Admin Registration is Successful.",
     data: result[0],
+  });
+});
+
+const getMyRole = catchAsync(async (req, res, next) => {
+  const result = await UserService.getMyRoleService(req.user.id);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "My Role",
+    data: result,
   });
 });
 
 module.exports = {
   registerUser,
-  getAllUsers,
+  registerUserByAdmin,
   registerAdmin,
+  registerSuperAdmin,
+  getAllUsers,
+  getMyRole,
 };

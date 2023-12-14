@@ -18,16 +18,14 @@ const loginService = async (payload) => {
 
   const { _id, role } = isExistUser;
 
-  const isMatchPassword = async () => {
-    return await bcrypt.compare(password, isExistUser.password);
-  };
+  const isMatchPassword = await bcrypt.compare(password, isExistUser.password);
 
   if (!isMatchPassword) {
     throw new ApiError(400, "Invalid credentials");
   }
 
   const accessToken = jwtHelpers.createToken(
-    { _id, email, role,  },
+    { _id, email, role },
     config.jwt.secret,
     config.jwt.expires_in
   );
