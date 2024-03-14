@@ -17,7 +17,7 @@ router.post(
 );
 router.post(
   "/register/super-admin",
-  auth("super admin"),
+  // auth("super admin"),
   UserController.registerSuperAdmin
 );
 router.get("/my-role", auth(), UserController.getMyRole);
