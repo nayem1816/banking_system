@@ -10,7 +10,10 @@ const app = express();
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "https://banking-system-frontend-three.vercel.app/",
+    origin: [
+      "http://localhost:3000",
+      "https://banking-system-frontend-nayem1816.vercel.app",
+    ],
     credentials: true,
   })
 );
